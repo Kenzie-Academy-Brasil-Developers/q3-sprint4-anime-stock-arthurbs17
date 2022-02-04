@@ -158,3 +158,25 @@ class DatabaseConnector:
 
         return att_anime
     
+    @classmethod
+    def delete_anime(cls, id: int):
+        cls.get_conn_cur()
+
+        query = sql.SQL(
+            """
+            DELETE FROM
+                animes
+            WHERE
+                id = {id}
+            RETURNING *
+            """
+        ).format(id = sql.Literal(id))
+
+        cls.cur.execute(query, (id,))
+        deleted_anime = cls.cur.fetchone()
+        cls.commit_and_close()
+
+        if deleted_anime == None:
+            raise TypeError
+
+        return deleted_anime

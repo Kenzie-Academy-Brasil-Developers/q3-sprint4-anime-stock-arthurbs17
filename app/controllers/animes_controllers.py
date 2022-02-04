@@ -43,3 +43,11 @@ def updated_anime(id: int):
         return jsonify(error.message), HTTPStatus.UNPROCESSABLE_ENTITY
     except TypeError:
         return jsonify({"error": "Not Found"}), HTTPStatus.NOT_FOUND
+
+def deleted_anime(id: int):
+
+    try:
+        Animes.delete_anime(id)
+        return jsonify(id), HTTPStatus.NO_CONTENT
+    except TypeError:
+        return jsonify({"error": "Not Found"}), HTTPStatus.NOT_FOUND

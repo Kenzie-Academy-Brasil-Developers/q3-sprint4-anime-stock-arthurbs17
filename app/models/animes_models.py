@@ -27,3 +27,7 @@ class Animes(DatabaseConnector):
     @classmethod
     def updated_anime(cls, id: int, payload: dict):
         return super().updated_anime(id, payload)
+    
+    @classmethod
+    def delete_anime(cls, id: int):
+        return super().delete_anime(id)
