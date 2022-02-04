@@ -23,3 +23,7 @@ class Animes(DatabaseConnector):
     @classmethod
     def get_specific_anime(cls, id: int):
         return super().get_specific_anime(id)
+    
+    @classmethod
+    def updated_anime(cls, id: int, payload: dict):
+        return super().updated_anime(id, payload)

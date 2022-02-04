@@ -123,5 +123,38 @@ class DatabaseConnector:
         cls.commit_and_close()
 
         return specific_anime
+    
+    @classmethod
+    def updated_anime(cls, id: int, payload: dict):
+        cls.get_conn_cur()
 
+        columns = [sql.Identifier(key) for key in payload.keys()]
+
+        if 'anime' in payload.keys():
+            payload['anime'] = payload['anime'].title()
+
+        values = [sql.Literal(value) for value in payload.values()]
+
+        query = sql.SQL(
+            """
+            UPDATE
+                animes
+            SET
+                ({columns}) = ROW({values})
+            WHERE
+                id={id}
+            RETURNING
+                id, anime, TO_CHAR(released_date, 'DD/MM/YYYY'), seasons
+            """
+        ).format(
+            id = sql.Literal(id),
+            columns = sql.SQL(',').join(columns),
+            values = sql.SQL(',').join(values)
+        )
+
+        cls.cur.execute(query, [id])
+        att_anime = cls.cur.fetchone()
+        cls.commit_and_close()
+
+        return att_anime
     
