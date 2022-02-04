@@ -33,6 +33,10 @@ class DatabaseConnector:
         cls.conn.close()
     
     @classmethod
+    def serializer(cls, data: tuple, keys: list[str]):
+        return dict(zip(keys, data))
+    
+    @classmethod
     def to_add_anime(cls, payload: dict):
         cls.get_conn_cur()
         
@@ -62,7 +66,9 @@ class DatabaseConnector:
 
         query = sql.SQL(
             """
-            SELECT * FROM animes;
+            SELECT 
+                id, anime, TO_CHAR(released_date, 'DD/MM/YYYY'), seasons
+            FROM animes;
             """
         )
 
@@ -98,5 +104,24 @@ class DatabaseConnector:
         return [row[0] for row in columns_name]
 
     @classmethod
-    def serializer(cls, data: tuple, keys: list[str]):
-        return dict(zip(keys, data))
+    def get_specific_anime(cls,id: int):
+        cls.get_conn_cur()
+
+        query = sql.SQL(
+            """
+            SELECT
+                id, anime, TO_CHAR(released_date, 'DD/MM/YYYY'), seasons
+            FROM
+                animes
+            WHERE
+                id = %s
+            """
+        )
+
+        cls.cur.execute(query, (id,))
+        specific_anime = cls.cur.fetchone()
+        cls.commit_and_close()
+
+        return specific_anime
+
+    

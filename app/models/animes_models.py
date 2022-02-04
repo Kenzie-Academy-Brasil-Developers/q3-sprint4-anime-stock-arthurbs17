@@ -19,3 +19,7 @@ class Animes(DatabaseConnector):
     @classmethod
     def serializer(cls, data: tuple, keys: list[str] = animes_columns):
         return super().serializer(data, keys)
+    
+    @classmethod
+    def get_specific_anime(cls, id: int):
+        return super().get_specific_anime(id)
